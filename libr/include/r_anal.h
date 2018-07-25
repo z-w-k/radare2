@@ -681,6 +681,7 @@ typedef struct r_anal_t {
 	bool bits_hints_changed;
 	Sdb *sdb_fcnsign; // OK
 	Sdb *sdb_cc; // calling conventions
+	Sdb *sdb_classes;
 	//RList *hints; // XXX use better data structure here (slist?)
 	RAnalCallbacks cb;
 	RAnalOptions opt;
@@ -1102,6 +1103,23 @@ typedef struct r_anal_esil_t {
 } RAnalEsil;
 
 #undef ESIL
+
+typedef struct r_anal_method_t {
+	char *name;
+	ut64 addr;
+} RAnalMethod;
+
+typedef struct r_anal_base_class_t {
+	ut64 offset;
+	char *name;
+} RAnalBaseClass;
+
+typedef struct r_anal_class_t {
+	char *name;
+	ut64 addr;
+	ut64 vtable_addr;
+	RList *base_classes; // <RAnalBaseClass>
+} RAnalClass;
 
 typedef int (*RAnalEsilOp)(RAnalEsil *esil);
 
@@ -1697,6 +1715,12 @@ R_API void r_anal_rtti_itanium_print_at_vtable(RVTableContext *context, ut64 add
 
 R_API void r_anal_rtti_print_at_vtable(RAnal *anal, ut64 addr, int mode);
 R_API void r_anal_rtti_print_all(RAnal *anal, int mode);
+
+/* classes */
+R_API RAnalClass *r_anal_class_new(const char *name);
+R_API void r_anal_class_free(RAnalClass *cls);
+R_API RAnalMethod *r_anal_method_new();
+R_API void r_anal_method_free(RAnalMethod *meth);
 
 /* plugin pointers */
 extern RAnalPlugin r_anal_plugin_null;
