@@ -788,8 +788,6 @@ R_API void r_bin_file_free(void /*RBinFile*/ *bf_) {
 	// format data first
 	if (plugin && plugin->destroy) {
 		plugin->destroy (a);
-	} else {
-		r_buf_free (a->buf);
 	}
 	r_buf_free (a->buf);
 	a->buf = NULL;
